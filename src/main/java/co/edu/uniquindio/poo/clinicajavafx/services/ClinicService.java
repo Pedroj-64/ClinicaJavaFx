@@ -1,7 +1,7 @@
-// service/ClinicService.java
 package co.edu.uniquindio.poo.clinicajavafx.services;
 
 import co.edu.uniquindio.poo.clinicajavafx.model.*;
+import co.edu.uniquindio.poo.clinicajavafx.model.factory.SuscriptionFactory;
 import co.edu.uniquindio.poo.clinicajavafx.repositories.ClinicRepository;
 
 import java.util.LinkedList;
@@ -21,37 +21,36 @@ public class ClinicService {
         this.billService = billService;
     }
 
-    public boolean registerPacient(Pacient pacient) {
-
+    public boolean registerPacient(String phoneNumber, String name, String email, String id, String tipoSuscripcion) {
         Optional<Pacient> existingPacient = clinicRepository.getAllPacients().stream()
-                .filter(p -> p.getId().equals(pacient.getId()))
+                .filter(p -> p.getId().equals(id))
                 .findFirst();
 
         if (existingPacient.isPresent()) {
             return false;
         }
 
+        Suscription suscription = SuscriptionFactory.createSuscription(tipoSuscripcion);
+
+        Pacient pacient = Pacient.builder()
+                .phoneNumber(phoneNumber)
+                .name(name)
+                .email(email)
+                .id(id)
+                .suscription(suscription)
+                .build();
+
         clinicRepository.savePacient(pacient);
         return true;
     }
 
     public boolean scheduleAppointment(MedicalAppointment appointment) {
-
-        if (!medicalAppointmentService.isSlotAvailable(appointment.getDate())) {
-            return false;
-        }
-
-        Bill bill = billService.createBill(appointment.getService().getPrice(), appointment.getService().getPrice());
-
-        clinicRepository.saveAppointment(appointment);
-
-        return true;
+        return medicalAppointmentService.scheduleAppointment(appointment);
     }
 
     public Bill generateBillForPacient(Pacient pacient, MedicalAppointment appointment) {
         double subtotal = appointment.getService().getPrice();
         double total = subtotal;
-
         return billService.createBill(subtotal, total);
     }
 

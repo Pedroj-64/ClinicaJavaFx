@@ -1,5 +1,7 @@
 package co.edu.uniquindio.poo.clinicajavafx.model;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +10,7 @@ import lombok.Setter;
 public abstract class Suscription {
 
     protected String tipo;
+    protected List<Service> services;
 
 }
     

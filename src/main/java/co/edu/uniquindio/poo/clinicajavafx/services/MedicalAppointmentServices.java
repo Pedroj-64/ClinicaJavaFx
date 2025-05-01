@@ -3,6 +3,7 @@ package co.edu.uniquindio.poo.clinicajavafx.services;
 
 import co.edu.uniquindio.poo.clinicajavafx.model.*;
 import co.edu.uniquindio.poo.clinicajavafx.repositories.MedicalAppointmentRepository;
+import co.edu.uniquindio.poo.clinicajavafx.utils.SendEmail;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -19,41 +20,74 @@ public class MedicalAppointmentServices {
         this.billService = billService;
     }
 
-    // 🏥 Verificar disponibilidad de horario
     public boolean isSlotAvailable(LocalDate date) {
         return appointmentRepository.getAll().stream()
-                .noneMatch(appointment -> appointment.getDate().equals(date)); // Validar si ya existe cita en el mismo
-                                                                               // día
+                .noneMatch(appointment -> appointment.getDate().equals(date));
+
     }
 
-    // 🏥 Agendar cita médica
     public boolean scheduleAppointment(MedicalAppointment appointment) {
-        // Verificar disponibilidad del horario
+
         if (!isSlotAvailable(appointment.getDate())) {
-            return false; // Si el horario ya está ocupado, no se puede agendar
+            return false;
         }
-
-        // Generar factura para la cita
-        Bill bill = billService.createBill(appointment.getService().getPrice(), appointment.getService().getPrice());
-
-        // Crear cita médica y asociar factura
+    
+        Pacient pacient = appointment.getPacient();
+        Suscription suscription = pacient.getSuscription();
+        Service service = appointment.getService();
+    
+        double subtotal = service.getPrice();
+        double total;
+    
+        if (suscription != null && suscription.getServices().contains(service)) {
+            total = 0; 
+        } else {
+            total = subtotal * 0.8; 
+        }
+    
+        Bill bill = billService.createBill(subtotal, total);
+    
         appointmentRepository.save(appointment);
-
-        // Retornar true si la cita fue agendada con éxito
+    
+        // Enviar notificación por correo
+        String receiver = pacient.getEmail();
+        String subject = "Confirmación de cita médica";
+        String message = String.format(
+                "Hola %s,\n\nTu cita ha sido agendada con éxito.\n" +
+                        "Fecha y hora: %s\n" +
+                        "Servicio: %s\n" +
+                        "Total pagado: $%.2f\n\nGracias por confiar en nuestra clínica.",
+                pacient.getName(),
+                appointment.getDate().toString(),
+                service.getName(),
+                bill.getTotal());
+    
+        SendEmail.enviarNotificacion(receiver, subject, message);
+    
         return true;
     }
+    
 
-    // 🗑️ Cancelar cita médica
     public void cancelAppointment(MedicalAppointment appointment) {
-        appointmentRepository.delete(appointment); // Eliminar la cita del repositorio
+
+        appointmentRepository.delete(appointment);
+
+        String receiver = appointment.getPacient().getEmail();
+        String subject = "Cancelación de cita médica";
+        String message = String.format(
+                "Hola %s,\n\nTu cita del %s para el servicio %s ha sido cancelada exitosamente.\n" +
+                        "Si deseas reprogramarla, por favor contáctanos.\n\nGracias.",
+                appointment.getPacient().getName(),
+                appointment.getDate().toString(),
+                appointment.getService().getName());
+
+        SendEmail.enviarNotificacion(receiver, subject, message);
     }
 
-    // 🏥 Obtener todas las citas médicas
     public LinkedList<MedicalAppointment> getAllAppointments() {
         return appointmentRepository.getAll();
     }
 
-    // 🔍 Buscar cita médica por ID
     public Optional<MedicalAppointment> getAppointmentById(UUID id) {
         return appointmentRepository.getAll().stream()
                 .filter(appointment -> appointment.getId().equals(id))
