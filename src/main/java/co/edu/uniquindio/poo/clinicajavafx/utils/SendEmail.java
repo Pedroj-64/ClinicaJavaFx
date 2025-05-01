@@ -18,7 +18,7 @@ public class SendEmail {
                 .buildEmail();
 
         try (Mailer mailer = MailerBuilder
-                .withSMTPServer("smtp.gmail.com", 587, "SU_EMAIL", "SU_CLAVE")
+                .withSMTPServer("smtp.gmail.com", 587, "tucarrouq@gmail.com", "fxcx rvac wwuj xtdo")
                 .withTransportStrategy(TransportStrategy.SMTP_TLS)
                 .withDebugLogging(true)
                 .buildMailer()) {
