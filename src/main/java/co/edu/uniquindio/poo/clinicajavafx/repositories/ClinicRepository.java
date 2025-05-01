@@ -1,31 +1,60 @@
+// repository/ClinicRepository.java
 package co.edu.uniquindio.poo.clinicajavafx.repositories;
 
-import co.edu.uniquindio.poo.clinicajavafx.model.Clinic;
-import co.edu.uniquindio.poo.clinicajavafx.model.MedicalAppointment;
-import co.edu.uniquindio.poo.clinicajavafx.model.Pacient;
-import co.edu.uniquindio.poo.clinicajavafx.model.Service;
+import co.edu.uniquindio.poo.clinicajavafx.model.*;
 
 import java.util.LinkedList;
-import java.util.Optional;
 
 public class ClinicRepository {
 
-    private Clinic Clinic;
-    private LinkedList<MedicalAppointment> medicalAppointments;
-    private LinkedList<Service> services;
-    private LinkedList<Pacient> pacients;
+    private final Clinic clinic;
 
     public ClinicRepository() {
-        this.medicalAppointments = new LinkedList<>();
-        this.services = new LinkedList<>();
-        this.pacients = new LinkedList<>();
-
+        this.clinic = new Clinic();
     }
 
-    public void saveClinic(Clinic clinic){this.Clinic=clinic;}
+   
+    public void savePacient(Pacient pacient) {
+        clinic.getPacients().add(pacient);
+    }
 
-    public Optional<Clinic> getClinic(){return Optional.ofNullable(this.Clinic);}
+    public LinkedList<Pacient> getAllPacients() {
+        return clinic.getPacients();
+    }
 
-    public void deleteClinic(Clinic clinic){this.Clinic=null;}
+    public void deletePacient(Pacient pacient) {
+        clinic.getPacients().remove(pacient);
+    }
 
+   
+    public void saveService(Service service) {
+        clinic.getServices().add(service);
+    }
+
+    public LinkedList<Service> getAllServices() {
+        return clinic.getServices();
+    }
+
+    public void deleteService(Service service) {
+        clinic.getServices().remove(service);
+    }
+
+ 
+    public void saveAppointment(MedicalAppointment appointment) {
+        clinic.getMedicalAppointments().add(appointment);
+    }
+
+    public LinkedList<MedicalAppointment> getAllAppointments() {
+        return clinic.getMedicalAppointments();
+    }
+
+    public void deleteAppointment(MedicalAppointment appointment) {
+        clinic.getMedicalAppointments().remove(appointment);
+    }
+
+    
+    public Clinic getClinic() {
+        return clinic;
+    }
 }
+

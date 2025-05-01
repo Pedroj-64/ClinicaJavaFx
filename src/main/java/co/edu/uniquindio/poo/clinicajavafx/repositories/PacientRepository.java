@@ -7,26 +7,30 @@ import java.util.Optional;
 
 public class PacientRepository {
 
-    public LinkedList<Pacient>pacients;
+    public LinkedList<Pacient> pacients;
 
-    public PacientRepository(){this.pacients=new LinkedList<>();}
+    public PacientRepository() {
+        this.pacients = new LinkedList<>();
+    }
 
-    public void save(Pacient pacient){
-        if(findById(pacient.getId()).isPresent()){
+    public void save(Pacient pacient) {
+        if (findById(pacient.getId()).isPresent()) {
             throw new IllegalArgumentException("Paciente con ID " + pacient.getId() + " ya existe.");
-        }else{
+        } else {
             pacients.add(pacient);
         }
     }
 
-    public Optional<Pacient> findById(String id){
+    public Optional<Pacient> findById(String id) {
         return pacients.stream().filter(pacient -> pacient.getId().equals(id)).findFirst();
     }
 
-    public LinkedList<Pacient> findAll(){
+    public LinkedList<Pacient> findAll() {
         return new LinkedList<>(pacients);
     }
 
-    public void delete(String id){pacients.removeIf(pacient -> pacient.getId().equals(id));}
+    public void delete(String id) {
+        pacients.removeIf(pacient -> pacient.getId().equals(id));
+    }
 
 }

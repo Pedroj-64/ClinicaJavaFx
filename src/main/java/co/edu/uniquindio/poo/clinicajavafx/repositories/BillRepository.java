@@ -1,22 +1,31 @@
+
 package co.edu.uniquindio.poo.clinicajavafx.repositories;
 
 import co.edu.uniquindio.poo.clinicajavafx.model.Bill;
 
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class BillRepository {
 
-    private final LinkedList<Bill> bills;
+    private final Map<UUID, Bill> billMap = new HashMap<>();
 
-    public BillRepository() {this.bills=new LinkedList<>();}
-
-    public void save(Bill bill){bills.add(bill);}
-
-    public Optional<Bill> getBill(UUID billid){
-        return bills.stream().filter(bill -> bill.getId().equals(billid)).findFirst();
+    public void save(Bill bill) {
+        billMap.put(bill.getId(), bill);
     }
 
-    public void delete(UUID billid){bills.removeIf(bill -> bill.getId().equals(billid));}
+    public Optional<Bill> findById(UUID id) {
+        return Optional.ofNullable(billMap.get(id));
+    }
+
+    public List<Bill> findAll() {
+        return new ArrayList<>(billMap.values());
+    }
+
+    public void delete(UUID id) {
+        billMap.remove(id);
+    }
+
+    public boolean exists(UUID id) {
+        return billMap.containsKey(id);
+    }
 }

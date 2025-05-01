@@ -20,6 +20,5 @@ public class MedicalAppointment {
         this.id = UUID.randomUUID();
         this.date = date;
         this.service = service;
-        this.bill = new Bill(date, service.getPrice(), service.getPrice() * 0.8);
     }
 }
