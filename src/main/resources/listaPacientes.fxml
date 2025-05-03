@@ -9,7 +9,7 @@
 <VBox xmlns="http://javafx.com/javafx"
      xmlns:fx="http://javafx.com/fxml"
      spacing="20.0"
-     fx:controller="co.edu.uniquindio.clinica.controladores.ListaPacientesViewController">
+     fx:controller="co.edu.uniquindio.poo.clinicajavafx.controller.PanelController">
  <Label text="Lista de Pacientes" textFill="#0f0f0f">
        <font>
            <Font size="20.0"/>

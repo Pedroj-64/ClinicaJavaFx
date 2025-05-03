@@ -1,58 +1,84 @@
 package co.edu.uniquindio.poo.clinicajavafx.controller;
 
-import co.edu.uniquindio.poo.clinicajavafx.ClinicApplication;
-import co.edu.uniquindio.poo.clinicajavafx.model.Clinic;
+import co.edu.uniquindio.poo.clinicajavafx.services.ClinicService;
+import co.edu.uniquindio.poo.clinicajavafx.model.*;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.LinkedList;
 
 public class PrincipalController {
 
-    private static Scene mainScene;
-    private static final Clinic clinic = new Clinic(); 
+    private ClinicService clinicService;
+    private Stage stage;
+    private StackPane root;
+    @FXML
+    private StackPane panelContenido;
 
-    public static Clinic getClinic() {
-        return clinic;
+    public PrincipalController(ClinicService clinicService, StackPane root, Stage stage) {
+        this.clinicService = clinicService;
+        this.root = root;  // Cambia a StackPane
+        this.stage = stage;
     }
 
-    public static void setScene(Scene scene) {
-        mainScene = scene;
+    // Método para obtener todas las citas médicas
+    public ObservableList<MedicalAppointment> getAllAppointments() {
+        return FXCollections.observableArrayList(clinicService.getAllAppointments());
     }
 
-    public static void loadScene(String fxml, double width, double height) {
+    // Obtener todos los pacientes
+    public LinkedList<Pacient> getAllPacients() {
+        return clinicService.getAllPacients();
+    }
+
+    // Obtener todos los servicios médicos
+    public LinkedList<Service> getAllServices() {
+        return clinicService.getAllServices();
+    }
+
+    // Registrar una cita médica
+    public boolean registerMedicalAppointment(Pacient pacient, Service service, LocalDate date) {
+        MedicalAppointment appointment = new MedicalAppointment(pacient, date, service);
+        return clinicService.scheduleAppointment(appointment);
+    }
+
+    // Método para cargar un archivo FXML
+    public void loadFXML(String fxmlPath) {
         try {
-            Parent root = loadFXML(fxml);
-            mainScene.setRoot(root);
-            mainScene.getWindow().setWidth(width);
-            mainScene.getWindow().setHeight(height);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            panelContenido.getChildren().setAll(root);
         } catch (IOException e) {
-            showAlert("Error al cambiar la vista", "No se pudo cargar el archivo FXML: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
         }
     }
 
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader loader = new FXMLLoader(ClinicApplication.class.getResource("/co/edu/uniquindio/poo/clinicajavafx/" + fxml + ".fxml"));
-        return loader.load();
+
+    // Método para cargar la vista con una escena
+    public void loadScene(String fxmlFile) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+        Scene scene = new Scene(loader.load());
+        stage.setScene(scene);
     }
 
-    public static void showAlert(String title, String message, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    // Método para registrar un paciente
+    public void registerPacient(String nombre, String id, String telefono, String email, String suscripcion) {
+        clinicService.registerPacient(nombre, id, telefono, email, suscripcion);
     }
 
-    public static void showAlertAndRedirect(String title, String message, Alert.AlertType type, String fxml,
-                                            double width, double height) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.setOnHidden(evt -> loadScene(fxml, width, height));
-        alert.show();
+
+    public void initData(ClinicService clinicService, StackPane root, Stage stage) {
+        this.clinicService = clinicService;
+        this.root = root;
+        this.stage = stage;
     }
 }

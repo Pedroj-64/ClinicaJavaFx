@@ -8,26 +8,18 @@ import java.util.LinkedList;
 import java.util.Optional;
 
 public class ClinicService {
+    ClinicRepository clinicRepository;
+    ClinicService medicalAppointmentService;
+    BillService billService;
 
-    private final ClinicRepository clinicRepository;
-    private final MedicalAppointmentServices medicalAppointmentService;
-    private final BillService billService;
+    public void registerPacient(String phoneNumber, String name, String email, String id, String tipoSuscripcion) {
 
-    public ClinicService(ClinicRepository clinicRepository,
-            MedicalAppointmentServices medicalAppointmentService,
-            BillService billService) {
-        this.clinicRepository = clinicRepository;
-        this.medicalAppointmentService = medicalAppointmentService;
-        this.billService = billService;
-    }
-
-    public boolean registerPacient(String phoneNumber, String name, String email, String id, String tipoSuscripcion) {
         Optional<Pacient> existingPacient = clinicRepository.getAllPacients().stream()
                 .filter(p -> p.getId().equals(id))
                 .findFirst();
 
         if (existingPacient.isPresent()) {
-            return false;
+            return;
         }
 
         Suscription suscription = SuscriptionFactory.createSuscription(tipoSuscripcion);
@@ -41,10 +33,10 @@ public class ClinicService {
                 .build();
 
         clinicRepository.savePacient(pacient);
-        return true;
     }
 
     public boolean scheduleAppointment(MedicalAppointment appointment) {
+
         return medicalAppointmentService.scheduleAppointment(appointment);
     }
 

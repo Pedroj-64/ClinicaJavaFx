@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane alignment="CENTER_LEFT" prefHeight="290.0" prefWidth="482.0" style="-fx-padding: 30px" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.poo.clinicajavafx.controller.PanelController">
+   <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0">
+      <items>
+          <VBox alignment="BASELINE_CENTER" minWidth="200.0" spacing="20.0">
+              <HBox alignment="CENTER" spacing="10.0">
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                          <Image url="@co/edu/uniquindio/poo/clinicajavafx/img/clinica.png" />
+                      </image>
+                  </ImageView>
+                  <Label text="Panel de la clínica">
+                      <font>
+                          <Font size="20.0" />
+                      </font>
+                  </Label>
+              </HBox>
+
+              <Button fx:id="Btn_registrar" minWidth="200.0" onAction="#mostrarRegistroPaciente" text="Registrar paciente" />
+              <Button fx:id="bnt_ListarPaientes" minWidth="200.0" onAction="#mostrarListaPacientes" text="Listar pacientes" />
+              <Button fx:id="btn_crearCita" minWidth="200.0" onAction="#mostrarRegistroCita" text="Crear cita" />
+              <Button fx:id="btn_listarCitas" minWidth="200.0" onAction="#mostrarListaCitas" text="Listar citas" />
+          </VBox>
+
+             <StackPane fx:id="panelContenido" alignment="CENTER_RIGHT" prefHeight="230.0" prefWidth="311.0" />
+      </items>
+   </SplitPane>
+</StackPane>

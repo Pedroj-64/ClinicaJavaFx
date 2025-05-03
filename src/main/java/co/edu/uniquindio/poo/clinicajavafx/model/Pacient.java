@@ -24,4 +24,9 @@ public class Pacient {
         this.suscription = suscription;
     }
 
+    @Override
+    public String toString() {
+        return id+" - "+name;
+    }
+
 }
